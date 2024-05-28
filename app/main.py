@@ -44,11 +44,11 @@ def obtener_parametros(data: Data):
                 "Resistividad": format(R, ".2e"),
                 "Conductancia": format(G, ".2e"),
             }
-        elif pen < data.a*1e-2:
+        else:
             return {
                 "error": "División por cero"
             }
-    else:
+    elif pen < data.a*1e-2:
         return {
             "pen": pen_str,
             'msg':'es alta frecuencia'
