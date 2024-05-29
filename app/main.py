@@ -35,8 +35,8 @@ def obtener_parametros(data: Data):
         divisor = math.log(data.b / data.a)
         if divisor != 0:
             L = permea_medio / (4 * math.pi) + permea_medio / math.pi * (math.log(data.b / data.a))
-            C = (math.pi * (permitividad)) / (math.log(data.b/data.a))
-            R = 2/(data.o*math.pi*(data.a)**2)
+            C = (2*math.pi * (permitividad)) / (math.log(data.b/data.a))
+            R = 1/(2*data.o*math.pi)*(1/data.a**2)
             G = (math.pi*permitividad_dielec)/(math.log(data.b/data.a))
             return {
                 'msg':'Es baja frecuencia',
@@ -51,10 +51,10 @@ def obtener_parametros(data: Data):
             }
     elif pen < data.a*1e-2:
         
-        L=(permea_medio/math.pi)*math.log(data.b/data.a)
-        C = (math.pi*permitividad)/(math.log(data.b/data.a))
-        R = 1/(math.pi*data.a*pen*data.o)
-        G = (math.pi*permitividad_dielec)/(math.log(data.b/data.a))
+        L=(permea_medio/2*math.pi)*math.log(data.b/data.a)
+        C = (2*math.pi*permitividad)/(math.log(data.b/data.a))
+        R = 1/(2*math.pi*data.a*pen*data.o)*(1/data.a+1/data.b)
+        G = (2*math.pi*permitividad_dielec)/(math.log(data.b/data.a))
         
         return {
             'msg':'Es alta frecuencia',
@@ -64,7 +64,13 @@ def obtener_parametros(data: Data):
             "G": format(G, ".2e"),
         }
 
-
+def obtener_params_placas(data:Data):
+    fa = 2 * math.pi * data.f
+    permea_medio = data.u * 4 * math.pi * 1e-7
+    permitividad = data.e * 8.8542*1e-12
+    pen = math.sqrt(2 / (fa * permea_medio * data.o))
+    
+    return {}
 
 @app.get("/")
 async def root():
@@ -73,3 +79,7 @@ async def root():
 @app.post("/coaxial")
 async def root(data: Data):
     return obtener_parametros(data)
+
+@app.post("/placas")
+async def root(data:Data):
+    return obtener_params_placas(data)
