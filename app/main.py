@@ -39,6 +39,7 @@ def obtener_parametros(data: Data):
             R = 2/(data.o*math.pi*(data.a)**2)
             G = (math.pi*permitividad_dielec)/(math.log(data.b/data.a))
             return {
+                'msg':'es baja frecuencia',
                 "Inductancia": format(L, ".2e"),
                 'Capacitancia': format(C, ".2e"),
                 "Resistividad": format(R, ".2e"),
@@ -49,8 +50,8 @@ def obtener_parametros(data: Data):
                 "error": "División por cero"
             }
     elif pen < data.a*1e-2:
+        
         return {
-            "pen": pen_str,
             'msg':'es alta frecuencia'
         }
 
