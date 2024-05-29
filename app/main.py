@@ -39,11 +39,11 @@ def obtener_parametros(data: Data):
             R = 2/(data.o*math.pi*(data.a)**2)
             G = (math.pi*permitividad_dielec)/(math.log(data.b/data.a))
             return {
-                'msg':'es baja frecuencia',
-                "Inductancia": format(L, ".2e"),
-                'Capacitancia': format(C, ".2e"),
-                "Resistividad": format(R, ".2e"),
-                "Conductancia": format(G, ".2e"),
+                'msg':'Es baja frecuencia',
+                "L": format(L, ".2e"),
+                'C': format(C, ".2e"),
+                "R": format(R, ".2e"),
+                "G": format(G, ".2e"),
             }
         else:
             return {
@@ -51,16 +51,25 @@ def obtener_parametros(data: Data):
             }
     elif pen < data.a*1e-2:
         
+        L=(permea_medio/math.pi)*math.log(data.b/data.a)
+        C = (math.pi*permitividad)/(math.log(data.b/data.a))
+        R = 1/(math.pi*data.a*pen*data.o)
+        G = (math.pi*permitividad_dielec)/(math.log(data.b/data.a))
+        
         return {
-            'msg':'es alta frecuencia'
+            'msg':'Es alta frecuencia',
+            "L": format(L, ".2e"),
+            'C': format(C, ".2e"),
+            "R": format(R, ".2e"),
+            "G": format(G, ".2e"),
         }
 
 
 
 @app.get("/")
 async def root():
-    return {"greeting": "Hello world"}
+    return {"greeting": "Hola tilin"}
 
 @app.post("/coaxial")
 async def root(data: Data):
-    return obtener_parametros(data)    
+    return obtener_parametros(data)
