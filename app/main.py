@@ -12,8 +12,16 @@ class Data(BaseModel):
     l: float
     f: float
     o: float
-    e:float
+    e: float
     c: float
+    
+class DataP(BaseModel):
+    a: float
+    b: float
+    u: float
+    f: float
+    o: float
+    e: float
 
 app.add_middleware(
     CORSMiddleware,
@@ -68,19 +76,21 @@ def obtener_parametros(data: Data):
             "conduc_d" : format(permitividad_dielec, ".2e")
         }
 
-def obtener_params_placas(data:Data):
+def obtener_params_placas(data:DataP):
     fa = 2 * math.pi * data.f
     permea_medio = data.u * 4 * math.pi * 1e-7
     permitividad = data.e * 8.8542*1e-12
     conduc_dielect = fa*permitividad*0.2*1e-3 
+    conductividad_conduc = data.o*1e7
     
-    pen = math.sqrt(2 / (fa * permea_medio * data.o))
+    pen = math.sqrt(2 / (fa * permea_medio * conductividad_conduc))
     L = (permea_medio*data.a)/math.pi
     C = (permitividad*data.b)/data.a
-    R = 2/(data.o*pen*data.b)
+    R = 2/(conductividad_conduc*pen*data.b)
     G = (conduc_dielect*data.b)/data.a
     
     return {
+        "msg": 'Placas paralelas',
         "L": format(L, ".2e"),
         'C': format(C, ".2e"),
         "R": format(R, ".2e"),
@@ -97,5 +107,5 @@ async def root(data: Data):
     return obtener_parametros(data)
 
 @app.post("/placas")
-async def root(data:Data):
+async def root(data:DataP):
     return obtener_params_placas(data)
