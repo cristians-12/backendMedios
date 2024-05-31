@@ -65,7 +65,7 @@ def obtener_parametros(data: Data):
                 "G": format(G, ".2e"),
                 "conduc_d" : format(pen, ".2e"),
                 "atenuacion" : atenuacion_l,
-                "longitud": list(range(int(data.l)))
+                "longitud": list(range(int(data.l)+1))
             }
         else:
             return {
@@ -90,7 +90,7 @@ def obtener_parametros(data: Data):
             "G": format(G, ".2e"),
             "conduc_d" : format(permitividad_dielec, ".2e"),
             "atenuacion" : atenuacion_l, 
-            "longitud": list(range(int(data.l)))
+            "longitud": list(range(int(data.l)+1))
         }
 
 def obtener_params_placas(data:DataP):
@@ -99,20 +99,27 @@ def obtener_params_placas(data:DataP):
     permitividad = data.e * 8.8542*1e-12
     conduc_dielect = fa*permitividad*0.2*1e-3 
     conductividad_conduc = data.o*1e7
+    j = cmath.sqrt(-1)
+    atenuacion_l = []
     
     pen = math.sqrt(2 / (fa * permea_medio * conductividad_conduc))
     L = (permea_medio*data.a)/math.pi
     C = (permitividad*data.b)/data.a
     R = 2/(conductividad_conduc*pen*data.b)
     G = (conduc_dielect*data.b)/data.a
-    
+    Y = cmath.sqrt((R+j*fa*L)*(G+j*fa*C))
+    for i in range(int(data.a)):
+        atenuacion = Y.real*8.686*i
+        atenuacion_l.append(atenuacion)
+        
     return {
         "msg": 'Placas paralelas',
         "L": format(L, ".2e"),
         'C': format(C, ".2e"),
         "R": format(R, ".2e"),
         "G": format(G, ".2e"),
-        
+        "longitud": list(range(int(data.b)+1)),
+        "atenuacion": atenuacion_l
     }
 
 @app.get("/")
