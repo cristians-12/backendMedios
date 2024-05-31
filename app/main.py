@@ -108,7 +108,7 @@ def obtener_params_placas(data:DataP):
     R = 2/(conductividad_conduc*pen*data.b)
     G = (conduc_dielect*data.b)/data.a
     Y = cmath.sqrt((R+j*fa*L)*(G+j*fa*C))
-    for i in range(int(data.a)):
+    for i in range(int(data.b)):
         atenuacion = Y.real*8.686*i
         atenuacion_l.append(atenuacion)
         
